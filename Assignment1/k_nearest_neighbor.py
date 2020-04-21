@@ -76,9 +76,9 @@ class KNearestNeighbor(object):
                 # not use a loop over dimension, nor use np.linalg.norm().          #
                 #####################################################################
                 # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-                # dists[i, j] = np.sqrt(np.sum((X[i]-self.X_train[j])**2))
-                dists[i][j] = np.sqrt(np.sum((X[i] - self.X_train[j])**2))
-                # pass
+
+                dists[i, j] = np.sqrt(np.sum((X[i]-self.X_train[j])**2))
+                # dists[i][j] = np.sqrt(np.sum((X[i] - self.X_train[j])**2))
 
                 # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         return dists
@@ -113,7 +113,8 @@ class KNearestNeighbor(object):
         in self.X_train using no explicit loops.
 
         Input / Output: Same as compute_distances_two_loops
-        """        num_test = X.shape[0]
+        """        
+        num_test = X.shape[0]
         num_train = self.X_train.shape[0]
         dists = np.zeros((num_test, num_train))
         #########################################################################
@@ -131,7 +132,7 @@ class KNearestNeighbor(object):
         #########################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         # dists = np.roots((X * self.X_train)**2)
-
+        dists = np.sqrt(np.sum(X**2, axis=1).reshape(num_test, 1) + np.sum(self.X_train**2, axis=1) - 2* X.dot(self.X_train.T))
         # pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
