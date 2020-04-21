@@ -76,7 +76,8 @@ class KNearestNeighbor(object):
                 # not use a loop over dimension, nor use np.linalg.norm().          #
                 #####################################################################
                 # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-                dists[i, j] = np.sqrt(np.sum((X[i]-self.X_train[j])**2))
+                # dists[i, j] = np.sqrt(np.sum((X[i]-self.X_train[j])**2))
+                dist[i][j] = np.sqrt(np.sum((X[i] - self.X_train[j])**2))
                 pass
 
                 # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
