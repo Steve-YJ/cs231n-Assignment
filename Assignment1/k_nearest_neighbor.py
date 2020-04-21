@@ -78,7 +78,7 @@ class KNearestNeighbor(object):
                 # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
                 # dists[i, j] = np.sqrt(np.sum((X[i]-self.X_train[j])**2))
                 dists[i][j] = np.sqrt(np.sum((X[i] - self.X_train[j])**2))
-                pass
+                # pass
 
                 # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         return dists
@@ -101,8 +101,8 @@ class KNearestNeighbor(object):
             # Do not use np.linalg.norm().                                        #
             #######################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-            dists[i] = np.roots(np.sum((self.X_train[i]-X[i])**2))
-            pass
+            dists[i, :] = np.sqrt(np.sum((self.X_train[i]-X[i])**2))
+            # pass
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         return dists
@@ -130,9 +130,9 @@ class KNearestNeighbor(object):
         #       and two broadcast sums.                                         #
         #########################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        dists = np.roots((X * self.X_train)**2)
+        # dists = np.roots((X * self.X_train)**2)
 
-        pass
+        # pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         return dists
@@ -164,9 +164,10 @@ class KNearestNeighbor(object):
             # Hint: Look up the function numpy.argsort.                             #
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-            np.argsort()
-
-            pass
+            closest_y = self.y_train[np.argsort(dists[i, :])][:k]  # dists i번째 열에서 distance가 가장 적은 순으로 정렬한다
+                                                                   # list array에서 k번째로 가까운 수 만큼 인덱싱해준다 
+            
+            # pass
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
             #########################################################################
@@ -177,8 +178,8 @@ class KNearestNeighbor(object):
             # label.                                                                #
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-            
-            pass
+            y_pred[i] = np.bincount(closest_y).argmax()
+            # pass
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
