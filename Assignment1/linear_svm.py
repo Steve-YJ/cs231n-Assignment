@@ -37,13 +37,18 @@ def svm_loss_naive(W, X, y, reg):
             if margin > 0:
                 loss += margin
 
+                # reference: https://github.com/jariasf/CS231n/blob/master/assignment1/cs231n/classifiers/linear_svm.py
+                dW[:, y[i]] = dW[:, y[i] - X[i]]  
+                dW[:, j] = dW[:,j] + X[i]
+
     # Right now the loss is a sum over all training examples, but we want it
     # to be an average instead so we divide by num_train.
     loss /= num_train
+    dW = dW / num_train
 
     # Add regularization to the loss.
     loss += reg * np.sum(W * W)
-
+    dW = dW + reg * 2 * W 
     #############################################################################
     # TODO:                                                                     #
     # Compute the gradient of the loss function and store it dW.                #
@@ -57,7 +62,10 @@ def svm_loss_naive(W, X, y, reg):
     # pass
     # 여기서부터 gradient를 구하는 코드를 구현하면 된다 이거지!
     # 쉽지 않겠군... -20.04.22.wed.pm1:11-
-    
+
+    # Implement Gradient
+
+
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     
@@ -81,8 +89,24 @@ def svm_loss_vectorized(W, X, y, reg):
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    # reference: https://github.com/jariasf/CS231n/blob/master/assignment1/cs231n/classifiers/linear_svm.py
+    # compute loss
+    num_classes = W.shape[1]
+    num_train = X.shape[0]
+    scores = np.dot(X, W)
+    correct_class_scores = scores[np.arange(num_train), y].reshape(num_train, 1)
 
+    # compute margin ( scores)
+    # scores에서 correct_class_scores를 뺴줘야 margin을 구할 수 있다.
+    margin = np.maximum(0, scores - correct_class_scores + 1)
+    margin[np.arange(num_train), y] = 0  # do not consider correct class in loss
+                                         # 실제 정답인 클래스들은 마진을 0으로 한다.
+    loss = margin.sum() / num_train
+    
+    # Add regularization to the loss
+    loss += reg * np.sum(W*W)
+
+    # pass
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     #############################################################################
@@ -96,7 +120,18 @@ def svm_loss_vectorized(W, X, y, reg):
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    # reference: https://github.com/MahanFathi/CS231/blob/master/assignment1/cs231n/classifiers/linear_svm.py
+    # compute gradient
+    # pass
+    X_mask = np.zeros(margin.shape)
+    X_mask[margin > 0] = 1  # margin이 0보다 크면 모두 True
+    X_mask[np.arange(num_train), y] -= np.sum(X_mask, axis=1)
+
+    #subtract in correct class (-s_y)
+    dW = (X.T).dot(X_mask) / num_train
+
+    # Regularization gradient
+    dW = dW + reg * 2 * W
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
