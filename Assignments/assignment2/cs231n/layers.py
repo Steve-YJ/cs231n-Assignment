@@ -20,14 +20,21 @@ def affine_forward(x, w, b):
     - out: output, of shape (N, M)
     - cache: (x, w, b)
     """
-    out = None
+    # out = None
+    # 설마... 얘땜에...? --20.04.23.Thur.pm 9:32--
     ###########################################################################
     # TODO: Implement the affine forward pass. Store the result in out. You   #
     # will need to reshape the input into rows.                               #
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    # pass
+    
+    x = x.reshape(x.shape[0], -1)
+    # out = np.dot(x, w) + b
+    # out = np.dot(x,w) + b
+    out = x.dot(w) + b
+    # print(type(out))
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ###########################################################################
