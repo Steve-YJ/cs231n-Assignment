@@ -10,7 +10,6 @@ def affine_forward(x, w, b):
     examples, where each example x[i] has shape (d_1, ..., d_k). We will
     reshape each input into a vector of dimension D = d_1 * ... * d_k, and
     then transform it to an output vector of dimension M.
-
     Inputs:
     - x: A numpy array containing input data, of shape (N, d_1, ..., d_k)
     - w: A numpy array of weights, of shape (D, M)
@@ -43,7 +42,7 @@ def affine_forward(x, w, b):
     cache = (x, w, b)
     return out, cache
 
-
+# Affine_backward를 구현해 볼까나 -20.04.24.Fri-
 def affine_backward(dout, cache):
     """
     Computes the backward pass for an affine layer.
@@ -67,7 +66,12 @@ def affine_backward(dout, cache):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    # pass
+    dx = dout.dot(w.T)
+    dw = x.T.dot(dout)
+    # db = dout  # 이게 아닌가요?? 아... bias가 broadcasting되어 더해지는구나...!
+    db = np.sum(dout, axis=0)
+    
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ###########################################################################
@@ -87,14 +91,15 @@ def relu_forward(x):
     - out: Output, of the same shape as x
     - cache: x
     """
-    out = None
+    # out = None
     ###########################################################################
     # TODO: Implement the ReLU forward pass.                                  #
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
-
+    # pass
+    # out = max(0, x)
+    out = np.maximum(0, x)
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ###########################################################################
     #                             END OF YOUR CODE                            #
@@ -120,7 +125,15 @@ def relu_backward(dout, cache):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    # pass
+    '''
+    if x <= 0:
+      dx = 0
+    elif x > 0:
+      dx = 1
+    '''
+    # 출처: https://github.com/MahanFathi/CS231/blob/master/assignment2/cs231n/layers.py
+    dx = (x > 0) * dout
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ###########################################################################
