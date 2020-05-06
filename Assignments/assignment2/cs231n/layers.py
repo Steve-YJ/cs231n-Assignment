@@ -524,7 +524,69 @@ def conv_forward_naive(x, w, b, conv_param):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    # pass
+    N, C, H, W = x.shape
+    FN, C, FH, FW = w.shape
+    
+    stride = conv_param['stride']
+    pad = conv_param['pad']         ## Okay 
+
+    # ===== Referenced  =====
+    # https://github.com/jariasf/CS231n/blob/master/assignment2/cs231n/layers.py
+
+
+
+    # out: (N, FN, H', W')
+    assert (H - FH + 2 * pad) % stride == 0
+    assert (W - FW + 2 * pad) % stride == 0
+
+    H_prime = 1 + (H - FH + 2 * pad) // stride
+    W_prime = 1 + (W - FW + 2 *pad) // stride
+
+    # =====  Referenced =====
+    # yunjey
+
+    """
+    out = (N, FN, H_prime, W_prime)   <== before edit
+    """    
+    # ===== Editted =====
+    '''
+    >> Debugging >>
+    print(type(N))
+    print(type(FN))
+    print(type(H_prime))
+    print(type(W_prime))
+    '''
+    out = np.zeros((N, FN, H_prime, W_prime))
+
+    # print(pad)
+    # Numpy.pad: https://docs.scipy.org/doc/numpy/reference/generated/numpy.pad.html
+    x_pad = np.pad(x, ((0, 0), (0, 0), (pad, pad), (pad, pad)), mode='constant')
+    # x_pad_test = np.pad(x, [(pad, pad), (pad, pad)], mode = 'constant')     ## Reference: https://stackoverflow.com/questions/35751306/python-how-to-pad-numpy-array-with-zeros
+                                                                           # In this case tuple corresponds to a dimension and item therein represents the padding padding before and after
+    # x_pad_test = np.pad(x, [pad, pad], mode = 'constant')   
+    # x_pad_test = np.pad(x, ((0, 0), (0, 0), (pad, pad), (pad, pad)), mode = 'constant')  # 아... 2차원이 아니라 4차원이지...!!
+    # print(x_pad.shape)
+    # print(x_pad_test.shape)
+
+    '''
+    for n in range(N):            # N개의 image에 대해
+        for fn in range(FN):       # FM개(Fileter 수만큼)의 Activation map
+            for h in range(H_prime):
+                for w in range(W_prime):
+                    out[n, fn, h, w] = (x_pad[n, :, h*stride:h*stride+FH, w*stride:w*stride+FW] * w[fn, :, :, :]).sum() + b[f]
+    '''
+
+    # ===== Referenced ======
+    # https://github.com/yunjey/cs231n/blob/master/assignment2/cs231n/layers.py
+    for i in range(N):
+      image = x_pad[i, :, : ,:]
+      for j in range(FN):
+          for k in range(H_prime):
+              for l in range(W_prime):
+                  image_patch = image[:, (k*stride):(k*stride + FH), (l*stride):(l*stride + FH)]
+                  out[i, j, k, l] = np.sum(np.multiply(image_patch, w[j, :, :, :])) + b[j]
+    
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ###########################################################################
